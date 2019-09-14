@@ -1,3 +1,13 @@
+#define PWM_MAX 70
+#define FORWARD_HIGH 1023
+#define FORWARD_LOW 584
+#define BACKWARD_HIGH 496
+#define BACKWARD_LOW 0
+#define LEFT_HIGH 480
+#define LEFT_LOW 0
+#define RIGHT_HIGH 1023
+#define RIGHT_LOW 565
+
 // define pin names
 int xAxis = A0;
 int yAxis = A1;
@@ -24,28 +34,30 @@ void setup() {
 void loop() {
   int xValue = analogRead(xAxis);
   int yValue = analogRead(yAxis);
-  /*
+  
+  // echo sensor values
   Serial.print("x = ");
   Serial.print(xValue);
   Serial.print("\ty = ");
   Serial.println(yValue);
-  */
+  delay(250);
+
   // Y-axis used for forward and backward control
-  if (yValue < 434) {
+  if (yValue < BACKWARD_HIGH) {
     // Set motros backward
     digitalWrite(motor_left_dir, LOW);
     digitalWrite(motor_right_dir, HIGH);
 
     // Convert the declining Y-axis readings for going backward from 434 to 0 into 0 to 255 value for the PWM signal for increasing the motor speed
-    motor_left_speed = map(yValue, 434, 0, 0, 255);
+    motor_left_speed = map(yValue, BACKWARD_HIGH, BACKWARD_LOW, 0, PWM_MAX);
     motor_right_speed = motor_left_speed;
-  } else if (yValue > 450) {
+  } else if (yValue > FORWARD_LOW) {
     // Set motors forward
     digitalWrite(motor_left_dir, HIGH);
     digitalWrite(motor_right_dir, LOW);
 
     // Convert the declining Y-axis readings for going backward from 450 to 896 into 0 to 255 value for the PWM signal for increasing the motor speed
-    motor_left_speed = map(yValue, 450, 896, 0, 255);
+    motor_left_speed = map(yValue, FORWARD_LOW, FORWARD_HIGH, 0, PWM_MAX);
     motor_right_speed = motor_left_speed;
   } else{
     motor_left_speed = 0;
@@ -53,9 +65,9 @@ void loop() {
   }
 
   // X-axis used for left and right control
-  if (xValue < 440) {
+  if (xValue < LEFT_HIGH) {
     // Convert the declining X-axis readings from 440 to 0 into increasing 0 to 255 value
-    int xMapped = map(xValue, 440, 0, 0, 255);
+    int xMapped = map(xValue, LEFT_HIGH, LEFT_LOW, 0, PWM_MAX);
   
     // Move to left - decrease left motor speed, increase right motor speed
     motor_left_speed -= xMapped;
@@ -65,12 +77,12 @@ void loop() {
     if (motor_left_speed < 0) {
       motor_left_speed = 0;
     }
-    if (motor_right_speed > 255) {
-      motor_right_speed = 255;
+    if (motor_right_speed > PWM_MAX) {
+      motor_right_speed = PWM_MAX;
     }
-  } else if (xValue > 470) {
+  } else if (xValue > RIGHT_LOW) {
     // Convert the increasing X-axis readings from 470 to 896 into 0 to 255 value
-    int xMapped = map(xValue, 470, 896, 0, 255);
+    int xMapped = map(xValue, RIGHT_LOW, RIGHT_HIGH, 0, PWM_MAX);
     // Move right - decrease right motor speed, increase left motor speed
     motor_left_speed += xMapped;
     motor_right_speed -= xMapped;
@@ -78,8 +90,8 @@ void loop() {
     if (motor_right_speed < 0) {
       motor_right_speed = 0;
     }
-    if (motor_left_speed > 255) {
-      motor_left_speed = 255;
+    if (motor_left_speed > PWM_MAX) {
+      motor_left_speed = PWM_MAX;
     }
   }
 
@@ -90,11 +102,12 @@ void loop() {
   if (motor_right_speed < 10) {
     motor_right_speed = 0;
   }
-  
+
   Serial.print("left speed = ");
   Serial.print(motor_left_speed);
   Serial.print("\t right speed = ");
   Serial.println(motor_right_speed);
+
   analogWrite(motor_left_pwm, motor_left_speed);
   analogWrite(motor_right_pwm, motor_right_speed);
 }
