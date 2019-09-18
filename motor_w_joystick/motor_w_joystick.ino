@@ -8,6 +8,8 @@
 #define RIGHT_HIGH 1023
 #define RIGHT_LOW 565
 
+//#define DEBUG 1
+
 // define pin names
 int xAxis = A0;
 int yAxis = A1;
@@ -26,21 +28,25 @@ void setup() {
   pinMode(motor_left_dir, OUTPUT);
   digitalWrite(motor_right_dir, LOW);
   digitalWrite(motor_left_dir, LOW);
+#ifdef DEBUG
   // initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
+#endif
 }
 
 // the loop routine runs over and over again forever:
 void loop() {
   int xValue = analogRead(xAxis);
   int yValue = analogRead(yAxis);
-  
+
+#ifdef DEBUG
   // echo sensor values
   Serial.print("x = ");
   Serial.print(xValue);
   Serial.print("\ty = ");
   Serial.println(yValue);
   delay(250);
+#endif
 
   // Y-axis used for forward and backward control
   if (yValue < BACKWARD_HIGH) {
@@ -103,10 +109,12 @@ void loop() {
     motor_right_speed = 0;
   }
 
+#ifdef DEBUG
   Serial.print("left speed = ");
   Serial.print(motor_left_speed);
   Serial.print("\t right speed = ");
   Serial.println(motor_right_speed);
+#endif
 
   analogWrite(motor_left_pwm, motor_left_speed);
   analogWrite(motor_right_pwm, motor_right_speed);
