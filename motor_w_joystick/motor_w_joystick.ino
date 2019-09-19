@@ -76,29 +76,27 @@ void loop() {
     int xMapped = map(xValue, LEFT_HIGH, LEFT_LOW, 0, PWM_MAX);
   
     // Move to left - decrease left motor speed, increase right motor speed
-    motor_left_speed -= xMapped;
-    motor_right_speed += xMapped;
-
-    // Confine the range from 0 to 255
-    if (motor_left_speed < 0) {
-      motor_left_speed = 0;
-    }
-    if (motor_right_speed > PWM_MAX) {
-      motor_right_speed = PWM_MAX;
+    // Add steering threshold to make it easier to go straight
+    if(xMapped > 20){
+      motor_left_speed -= xMapped;
+      motor_right_speed += xMapped;
     }
   } else if (xValue > RIGHT_LOW) {
     // Convert the increasing X-axis readings from 470 to 896 into 0 to 255 value
     int xMapped = map(xValue, RIGHT_LOW, RIGHT_HIGH, 0, PWM_MAX);
     // Move right - decrease right motor speed, increase left motor speed
-    motor_left_speed += xMapped;
-    motor_right_speed -= xMapped;
-    // Confine the range from 0 to 255
-    if (motor_right_speed < 0) {
-      motor_right_speed = 0;
+    if(xMapped > 20){
+      motor_left_speed += xMapped;
+      motor_right_speed -= xMapped;
     }
-    if (motor_left_speed > PWM_MAX) {
-      motor_left_speed = PWM_MAX;
-    }
+  }
+
+  // Confine the range from 0 to PWM_MAX
+  if (motor_right_speed < 0) {
+    motor_right_speed = 0;
+  }
+  if (motor_left_speed > PWM_MAX) {
+    motor_left_speed = PWM_MAX;
   }
 
   // Prevent buzzing at low speeds (Adjust according to your motors. My motors couldn't start moving if PWM value was below value of 70)
