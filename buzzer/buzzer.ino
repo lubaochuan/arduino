@@ -23,7 +23,7 @@ const int buzzerPin = 9;        //D6
 // variables will change:
 int redButtonState = 0;
 int yellowButtonState = 0;
-int favor = 0;
+int over = 0;
 
 void setup() {
   pinMode(redLedPin, OUTPUT);
@@ -33,26 +33,23 @@ void setup() {
   pinMode(buzzerPin, OUTPUT);
 }
 
-void blink(int pin, int times){
-  for(int i=0; i<times; i++){
-    digitalWrite(pin, HIGH);
-    delay(150);
-    digitalWrite(pin, LOW);
-    delay(150);
-  }
-}
-
 void loop() {
-  redButtonState = digitalRead(redButtonPin);
-  yellowButtonState = digitalRead(yellowButtonPin);
+  if(over != 1){
+    redButtonState = digitalRead(redButtonPin);
+    yellowButtonState = digitalRead(yellowButtonPin);
 
-  if (redButtonState == LOW) {
-    tone(buzzerPin, 440); // place note A4
-    blink(redLedPin, 3);
-    noTone(buzzerPin);
-  } else if(yellowButtonState == LOW) {
-    tone(buzzerPin, 440); // place note A4
-    blink(yellowLedPin, 3);
-    noTone(buzzerPin);
+    if (redButtonState == LOW) {
+      tone(buzzerPin, 440); // place note A4
+      digitalWrite(redLedPin, HIGH);
+      delay(500);
+      noTone(buzzerPin);
+      over=1;
+    } else if(yellowButtonState == LOW) {
+      tone(buzzerPin, 440); // place note A4
+      digitalWrite(yellowLedPin, HIGH);
+      delay(500);
+      noTone(buzzerPin);
+      over=1;
+    }
   }
 }
