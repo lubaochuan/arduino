@@ -1,0 +1,9 @@
+#define PWM_MAX 70
+#define FORWARD_HIGH 1023
+#define FORWARD_LOW 535
+#define BACKWARD_HIGH 500
+#define BACKWARD_LOW 0
+#define LEFT_HIGH 518
+#define LEFT_LOW 0
+#define RIGHT_HIGH 1023
+#define RIGHT_LOW 492
