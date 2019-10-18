@@ -92,11 +92,18 @@ void loop() {
   }
 
   // Confine the range from 0 to PWM_MAX
-  if (motor_right_speed < 0) {
-    motor_right_speed = 0;
+  if (motor_left_speed < 0) {
+    motor_left_speed = 0;
   }
   if (motor_left_speed > PWM_MAX) {
     motor_left_speed = PWM_MAX;
+  }
+
+  if (motor_right_speed < 0) {
+    motor_right_speed = 0;
+  }
+  if (motor_right_speed > PWM_MAX) {
+    motor_right_speed = PWM_MAX;
   }
 
   // Prevent buzzing at low speeds (Adjust according to your motors. My motors couldn't start moving if PWM value was below value of 70)
